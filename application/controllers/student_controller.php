@@ -37,19 +37,18 @@ class Student_Controller extends CI_Controller
 
             if ($this->form_validation->run() == false) {
                 if(!isset($_POST['student_name']) && !isset($_POST['class_id'])) {
-                $data['data'] = array(
-                    'message' => '',
-                    'class_type'=>'',  
-                );
+                    $data['data'] = array(
+                        'message' => '',
+                        'class_type'=>'',  
+                    );
                 } 
-                else {
-               
-                $data['data'] = array(
-                    'message' => validation_errors(),
-                    'class_type'=>'validation',
-                    
-                );
+                else {              
+                    $data['data'] = array(
+                        'message' => validation_errors(),
+                        'class_type'=>'validation',
+                    );
                 }
+                
                 $data['content_view'] = 'create_view';
                 $this->load->view('template', $data);
             }
@@ -107,51 +106,48 @@ class Student_Controller extends CI_Controller
 
             if ($this->form_validation->run() == false or $id == -1) {
                 if(!isset($_POST['student_new_name']) && !isset($_POST['class_id'])) {
-                $data = array(
-                    'id' => $id,
-                    'message' => '',
-                    'class_type'=>'',
-                    'check_auth' => $check_auth,
-                    'student_name' => $_POST['student_old_name'],
-                    'class_id' => $_POST['old_class_id'],          
-                );
+                    $data = array(
+                        'id' => $id,
+                        'message' => '',
+                        'class_type'=>'',
+                        'check_auth' => $check_auth,
+                        'student_name' => $_POST['student_old_name'],
+                        'class_id' => $_POST['old_class_id'],          
+                    );
                 } 
                 else {
-                $data = array(
-                    'id' => $id,
-                    'check_auth' => $check_auth,
-                    'student_name' => $_POST['student_old_name'],
-                    'class_id' => $_POST['old_class_id'],    
-                    'class_type'=>'validation',
-                    'message'=> validation_errors(),
-                );
+                    $data = array(
+                        'id' => $id,
+                        'check_auth' => $check_auth,
+                        'student_name' => $_POST['student_old_name'],
+                        'class_id' => $_POST['old_class_id'],    
+                        'class_type'=>'validation',
+                        'message'=> validation_errors(),
+                    );
                 }
-            $response_view = $this->load->view('update_view', $data, true);
-            $response = array(
-                'status'=>$status,
-                'response_view'=> $response_view,
-            );
-            echo json_encode($response);
-            
-
+                $response_view = $this->load->view('update_view', $data, true);
+                $response = array(
+                    'status'=>$status,
+                    'response_view'=> $response_view,
+                );
+                echo json_encode($response);
             }
             else {
                 $status = $this->Student_Model->updateStudent($id, $_POST['student_new_name'], $_POST['class_id']);
-                if($status == true)
-                {
+                if($status == true) {
                     $data = array(
                         'id' => $id,
                         'class_type'=>'success',
                         'check_auth' => $check_auth,
                         'message'=> 'Информация о пользователе была обновлена',
                     );
-            $data['students'] = $this->Student_Model->showStudents();
-            $response_view = $this->load->view('read_view', $data, true);
-            $response = array(
-                'status'=>$status,
-                'response_view'=> $response_view,
-            );
-            echo json_encode($response);
+                    $data['students'] = $this->Student_Model->showStudents();
+                    $response_view = $this->load->view('read_view', $data, true);
+                    $response = array(
+                        'status'=>$status,
+                        'response_view'=> $response_view,
+                    );
+                    echo json_encode($response);
                 }
                 else {
                     $data = array(
@@ -161,15 +157,14 @@ class Student_Controller extends CI_Controller
                     );
                     $response_view = $this->load->view('update_view', $data, true);
                     $response = array(
-                'status'=>$status,
-                'response_view'=> $response_view,
-            );
-            echo json_encode($response);
+                        'status'=>$status,
+                        'response_view'=> $response_view,
+                    );
+                    echo json_encode($response);
                 }              
             }
         }
         else  {
-        
             $this->load->library('auth_controller');
             $this->auth_controller->auth('update');
         }     
@@ -194,6 +189,7 @@ class Student_Controller extends CI_Controller
                 'check_auth' => $check_auth,
                 'message' => 'Информация о пользователе была удалена',
             );
+            
             $response_view = $this->load->view('read_view', $data, true);
             $response = array(
                 'status'=>$status,
