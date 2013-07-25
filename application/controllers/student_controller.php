@@ -5,8 +5,10 @@ class Student_Controller extends CI_Controller
     {
         $this->load->library('session');
         $check_auth = $this->session->userdata('logged_in');
+        $config['total_rows'] = $this->db->count_all('students');
+        $this->pagination->initialize($config);
         $this->load->model('Student_Model', '', true);
-        $data['students'] = $this->Student_Model->showStudents();
+        $data['students'] = $this->Student_Model->showStudents($this->pagination->per_page,$this->uri->segment(3));
         $data['check_auth'] = $check_auth;
         $data['content_view'] = 'read_view';
         $data['message'] = '';
@@ -19,6 +21,7 @@ class Student_Controller extends CI_Controller
         $this->load->library('session');
         $check_auth = $this->session->userdata('logged_in');
         $data['check_auth'] = $check_auth;
+        $status = false;
         if ($check_auth) {  
             $this->load->model('Student_Model', '', true);
             $this->load->helper(array('form', 'url'));
@@ -37,41 +40,55 @@ class Student_Controller extends CI_Controller
 
             if ($this->form_validation->run() == false) {
                 if(!isset($_POST['student_name']) && !isset($_POST['class_id'])) {
-                    $data['data'] = array(
+                    $data = array(
                         'message' => '',
                         'class_type'=>'',  
                     );
                 } 
                 else {              
-                    $data['data'] = array(
+                    $data = array(
                         'message' => validation_errors(),
                         'class_type'=>'validation',
                     );
                 }
                 
-                $data['content_view'] = 'create_view';
-                $this->load->view('template', $data);
+                $response_view = $this->load->view('create_view', $data, true);
+                $response = array(
+                    'status'=>$status,
+                    'response_view'=> $response_view,
+                );
+                echo json_encode($response);
             }
             else {
                 $status = $this->Student_Model->createStudent($_POST['student_name'], $_POST['class_id']);
-                if($status == true)
-                {
-                    $data['students'] = $this->Student_Model->showStudents();
-                    $data['data'] = array(
+                if($status == true) {
+                    $config['total_rows'] = $this->db->count_all('students');
+                    $this->pagination->initialize($config);
+                    $data = array(
                         'class_type'=>'success',
                         'check_auth' => $check_auth,
                         'message'=> 'Информация о пользователе была добавлена',
                     );
-                    $data['content_view'] = 'read_view';
-                    $this->load->view('template', $data);
+                    $data['students'] = $this->Student_Model->showStudents($this->pagination->per_page,$this->uri->segment(3));
+ 
+                    $response_view = $this->load->view('read_view', $data, true);
+                    $response = array(
+                    'status'=>$status,
+                    'response_view'=> $response_view,
+                    );
+                    echo json_encode($response);
                 }
                 else {
-                    $data['data'] = array(
+                    $data = array(
                         'class_type'=>'error',
                         'message'=> 'Информация о пользователе не была добавлена',
                     );
-                    $data['content_view'] = 'create_view';
-                    $this->load->view('template', $data);
+                    $response_view = $this->load->view('create_view', $data, true);
+                                $response = array(
+                    'status'=>$status,
+                    'response_view'=> $response_view,
+                    );
+                    echo json_encode($response);
                 }              
             }
         }
@@ -105,7 +122,7 @@ class Student_Controller extends CI_Controller
 
 
             if ($this->form_validation->run() == false or $id == -1) {
-                if(!isset($_POST['student_new_name']) && !isset($_POST['class_id'])) {
+                if(!isset($_POST['student_new_name']) && !isset($_POST['new_class_id'])) {
                     $data = array(
                         'id' => $id,
                         'message' => '',
@@ -133,7 +150,7 @@ class Student_Controller extends CI_Controller
                 echo json_encode($response);
             }
             else {
-                $status = $this->Student_Model->updateStudent($id, $_POST['student_new_name'], $_POST['class_id']);
+                $status = $this->Student_Model->updateStudent($id, $_POST['student_new_name'], $_POST['new_class_id']);
                 if($status == true) {
                     $data = array(
                         'id' => $id,
@@ -141,7 +158,9 @@ class Student_Controller extends CI_Controller
                         'check_auth' => $check_auth,
                         'message'=> 'Информация о пользователе была обновлена',
                     );
-                    $data['students'] = $this->Student_Model->showStudents();
+                    $config['total_rows'] = $this->db->count_all('students');
+                    $this->pagination->initialize($config);
+                    $data['students'] = $this->Student_Model->showStudents($this->pagination->per_page, 0);
                     $response_view = $this->load->view('read_view', $data, true);
                     $response = array(
                         'status'=>$status,
@@ -181,9 +200,12 @@ class Student_Controller extends CI_Controller
             if($id > -1) {
                 $status = $this->Student_Model->deleteStudent($id);
             }
+            $config['total_rows'] = $this->db->count_all('students');
+            $this->pagination->initialize($config);
+             $this->load->model('Student_Model', '', true);
 
             $data = array(
-                'students' => $this->Student_Model->showStudents(),
+                'students' => $this->Student_Model->showStudents($this->pagination->per_page, 0),
                 'class_type' => 'success',
                 'content_view' =>'read_view',
                 'check_auth' => $check_auth,

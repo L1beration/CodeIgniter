@@ -4,18 +4,23 @@
         <meta charset='utf-8'>
         <title>Список студентов</title>
         <link type='text/css' rel='stylesheet' href ='/css/style.css' >
+        <script type="text/javascript" src="/js/jquery.js"></script> 
         <script type="text/javascript" src="/js/table.js"></script> 
-
     </head>
     <body>
         <div id ='main'>
             <ul id = 'menu'>
-                <li><a href='/index.php/student_controller/index' >Просмотреть</a></li>
-                <li><a href='/index.php/student_controller/create'>Добавить</a></li>
-                <? if($check_auth)
-                        echo '<li><a href= "/index.php/login_controller/logout">Выйти</a></li>';
-                   else    
-                        echo '<li><a href="/index.php/login_controller/login">Войти</a></li>';
+                
+                <?
+                if($this->uri->segments[2] != 'index')
+                    echo '<li><button onclick="location.href=\'/index.php/student_controller/index/\'">Просмотреть</button></li>';
+                if($check_auth) {
+                    echo '<li><button class="create" type="button" >Добавить </button></li>';
+                    echo '<li><button onclick="location.href=\'/index.php/login_controller/logout\'">Выйти</button></li>';
+                }
+                else 
+                    if($this->uri->segments[2] != 'login')
+                        echo '<li><button onclick="location.href=\'/index.php/login_controller/login\'">Войти</button></li>';
                 ?>
 
             </ul>
@@ -25,9 +30,11 @@
                     $this->load->view($content_view, $data); 
                 ?>
             </div>
-
-
+                        <div id='add'>
+            </div>
             <p class='footer'></p>
+
         </div>
+
     </body>
 </html>

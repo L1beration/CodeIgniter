@@ -1,4 +1,3 @@
-<script type="text/javascript" src="/js/table.js"></script> 
 <div id="body">
     <h1>Список студентов</h1>
     <table>
@@ -19,12 +18,14 @@
                     $i++;
                 }
                 if($check_auth){
-                    echo '<button type="button" onclick="updateElement('. $id .', \''. addslashes($student_name) .'\', \' '. addslashes($class_id) .'\');">Изменить </button>';
-                    echo '<button type="button" onclick="return confirmDelete('. $id .');">Удалить </button>';
+                    echo '<button class="update" type="button" id="' .$id. '" student_name="' .addslashes($student_name). '" class_id="' .addslashes($class_id).'">Изменить </button>';
+                    echo '<button class="delete" type="button" id="' .$id. '" >Удалить </button>';
                 }
                 echo '</td></tr>';
+                
             }
          ?>
     </table>
+    <?=$this->pagination->create_links();?>
 <div/>
 <div class="<?=$class_type;?>" > <?=$message;?></div>
