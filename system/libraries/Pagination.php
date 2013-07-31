@@ -34,7 +34,7 @@ class CI_Pagination {
 	var $per_page			= 5; // Max number of items you want shown per page
 	var $num_links			=  2; // Number of "digit" links to show before/after the currently viewed page
 	var $cur_page			=  0; // The current page being viewed
-	var $use_page_numbers	= true; // Use page number for segment instead of offset
+	var $use_page_numbers	=  false; // Use page number for segment instead of offset
 	var $first_link			= '&lsaquo; Начало';
 	var $next_link			= '&gt;';
 	var $prev_link			= '&lt;';

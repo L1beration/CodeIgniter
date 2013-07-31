@@ -5,8 +5,6 @@ class Student_Model extends CI_Model
     {
         $this->db->select('students.id, student_name, class_name');
         $this->db->join('classes', 'students.class_id = classes.id');
-
-        $this->load->helper('security');
         
         return $this->db->get('students',$num, $offset)->result_array();
     }     
@@ -36,5 +34,12 @@ class Student_Model extends CI_Model
     {
         $this->db->where('id', $id);
         return $this->db->delete('students'); 
+    }
+    
+    function findStudentInfo($id)
+    {
+        $this->db->select('student_name, class_id');
+        $this->db->where('id', $id);
+        return $this->db->get('students')->result_array();
     }
 }

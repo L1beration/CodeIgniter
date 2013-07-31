@@ -8,7 +8,7 @@ class Student_Controller extends CI_Controller
         $config['total_rows'] = $this->db->count_all('students');
         $this->pagination->initialize($config);
         $this->load->model('Student_Model', '', true);
-        $data['students'] = $this->Student_Model->showStudents($this->pagination->per_page,$this->uri->segment(3));
+        $data['students'] = $this->Student_Model->showStudents($this->pagination->per_page, $this->uri->segment(3));
         $data['check_auth'] = $check_auth;
         $data['content_view'] = 'read_view';
         $data['message'] = '';
@@ -39,7 +39,7 @@ class Student_Controller extends CI_Controller
             $this->form_validation->set_rules($config); 
 
             if ($this->form_validation->run() == false) {
-                if(!isset($_POST['student_name']) && !isset($_POST['class_id'])) {
+                if($_SERVER['REQUEST_METHOD'] == 'GET') {
                     $data = array(
                         'message' => '',
                         'class_type'=>'',  
@@ -69,7 +69,7 @@ class Student_Controller extends CI_Controller
                         'check_auth' => $check_auth,
                         'message'=> 'Информация о пользователе была добавлена',
                     );
-                    $data['students'] = $this->Student_Model->showStudents($this->pagination->per_page,$this->uri->segment(3));
+                    $data['students'] = $this->Student_Model->showStudents($this->pagination->per_page, $this->uri->segment(3));
  
                     $response_view = $this->load->view('read_view', $data, true);
                     $response = array(
@@ -121,23 +121,25 @@ class Student_Controller extends CI_Controller
             $this->form_validation->set_rules($config); 
 
 
-            if ($this->form_validation->run() == false or $id == -1) {
-                if(!isset($_POST['student_new_name']) && !isset($_POST['new_class_id'])) {
+            if ($this->form_validation->run() == false) {
+                if($_SERVER['REQUEST_METHOD'] == 'GET') {
+                    $studentInfo = $this->Student_Model->findStudentInfo($id);
                     $data = array(
                         'id' => $id,
                         'message' => '',
                         'class_type'=>'',
                         'check_auth' => $check_auth,
-                        'student_name' => $_POST['student_old_name'],
-                        'class_id' => $_POST['old_class_id'],          
+                        'student_name' => $studentInfo[0]['student_name'],
+                        'class_id' => $studentInfo[0]['class_id'],          
                     );
                 } 
                 else {
+                    $studentInfo = $this->Student_Model->findStudentInfo($id);
                     $data = array(
                         'id' => $id,
                         'check_auth' => $check_auth,
-                        'student_name' => $_POST['student_old_name'],
-                        'class_id' => $_POST['old_class_id'],    
+                        'student_name' => $studentInfo[0]['student_name'],
+                        'class_id' => $studentInfo[0]['class_id'],  
                         'class_type'=>'validation',
                         'message'=> validation_errors(),
                     );
@@ -202,8 +204,8 @@ class Student_Controller extends CI_Controller
             }
             $config['total_rows'] = $this->db->count_all('students');
             $this->pagination->initialize($config);
-             $this->load->model('Student_Model', '', true);
-
+            $this->load->model('Student_Model', '', true);
+            
             $data = array(
                 'students' => $this->Student_Model->showStudents($this->pagination->per_page, 0),
                 'class_type' => 'success',

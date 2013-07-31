@@ -30,8 +30,7 @@
                     $this->load->view($content_view, $data); 
                 ?>
             </div>
-                        <div id='add'>
-            </div>
+            <div id='add'></div>
             <p class='footer'></p>
 
         </div>

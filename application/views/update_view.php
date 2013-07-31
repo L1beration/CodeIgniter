@@ -6,11 +6,17 @@
             <input name ='student_new_name' id ='student_new_name' value = '<?=$student_name;?>' >
         <p/>
         <label>Выберите группу</label>
-        <select name='new_class_id' size='1' id ='new_class_id' value = '<?=$class_id;?>' >
-            <option value='1'>Группа 1</option>
-            <option value='2'>Группа 2</option>
+        <select name='new_class_id' size='1' id ='new_class_id' >
+            <?
+            switch($class_id) {
+                case 1: echo "<option selcted value='1'>Группа 1</option> <option value='2'>Группа 2</option>";
+                    break;
+                case 2: echo "<option value='1'>Группа 1</option> <option selected value='2'>Группа 2</option>";
+                    break;
+            }
+            ?>
         </select>
-        <p><button class="update" type="button" id="<?=$id;?>" student_name="<?=$student_name;?>" class_id="<?=$class_id;?>">Изменить</button></p>
+        <p><button class="update" type="button" id="<?=$id;?>" >Изменить</button></p>
     </form> 
     <div class="<?=$class_type;?>" > <?=$message;?></div>
 </div>

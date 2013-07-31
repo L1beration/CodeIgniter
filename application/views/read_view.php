@@ -27,5 +27,6 @@
          ?>
     </table>
     <?=$this->pagination->create_links();?>
-<div/>
-<div class="<?=$class_type;?>" > <?=$message;?></div>
+</div>
+
+<div id ="message" class="<?=$class_type;?>" > <?=$message;?></div>
