@@ -73,8 +73,8 @@ class Student_Controller extends CI_Controller
  
                     $response_view = $this->load->view('read_view', $data, true);
                     $response = array(
-                    'status'=>$status,
-                    'response_view'=> $response_view,
+                        'status' => $status,
+                        'response_view' => $response_view,
                     );
                     echo json_encode($response);
                 }
@@ -159,10 +159,12 @@ class Student_Controller extends CI_Controller
                         'class_type'=>'success',
                         'check_auth' => $check_auth,
                         'message'=> 'Информация о пользователе была обновлена',
+                        'uri' => $_POST['last_segment'],
                     );
                     $config['total_rows'] = $this->db->count_all('students');
                     $this->pagination->initialize($config);
-                    $data['students'] = $this->Student_Model->showStudents($this->pagination->per_page, 0);
+                    $numb =  $this->uri->segment(3);
+                    $data['students'] = $this->Student_Model->showStudents($this->pagination->per_page, $_POST['last_segment']);
                     $response_view = $this->load->view('read_view', $data, true);
                     $response = array(
                         'status'=>$status,
@@ -206,12 +208,15 @@ class Student_Controller extends CI_Controller
             $this->pagination->initialize($config);
             $this->load->model('Student_Model', '', true);
             
+            $segment = $_POST['last_segment'];
+            if($this->db->count_all('students')% $this->pagination->per_page == 0) $segment -= $this->pagination->per_page;
             $data = array(
-                'students' => $this->Student_Model->showStudents($this->pagination->per_page, 0),
+                'students' => $this->Student_Model->showStudents($this->pagination->per_page, $segment),
                 'class_type' => 'success',
                 'content_view' =>'read_view',
                 'check_auth' => $check_auth,
                 'message' => 'Информация о пользователе была удалена',
+                'uri' => $_POST['last_segment'],
             );
             
             $response_view = $this->load->view('read_view', $data, true);

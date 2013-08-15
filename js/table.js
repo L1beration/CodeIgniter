@@ -1,11 +1,11 @@
 $(document).ready(function(){
-    $(".delete").click(function(){
+     $("#container").on('click', '.delete', function(){
+        var href = location.href;
+        var parameters = 'last_segment=' + href.replace(/.*\//, '');
         if (confirm("Вы подтверждаете удаление?")) {
-            $.post('/index.php/student_controller/delete/' + $(this).attr('id'))
-            .success(function(json){
-                    var obj = jQuery.parseJSON(json);
-                    $("#container").html(obj.response_view);
-                });
+            $.post('/index.php/student_controller/delete/' + $(this).attr('id'), parameters, function(json){
+                    $("#container").html(json.response_view);
+                }, 'json');
         } else {
             return false;
         }
@@ -14,57 +14,52 @@ $(document).ready(function(){
 
 $(document).ready(function(){
     $("#menu").on('click', '.create', function(){
-        $.get( '/index.php/student_controller/create/')
-        .success( function(json){
-            var obj = jQuery.parseJSON(json);
-            if(obj.status)
-                $("#container").html(obj.response_view);
+        $.get( '/index.php/student_controller/create/', function(json){
+            if(json.status)
+                $("#container").html(json.response_view);
             else {
-                $("#add").html(obj.response_view);
+                $("#add").html(json.response_view);
                 $("#container #message").remove();
             }
-        }); 
+        }, 'json'); 
     });
 
     
     $("#add").on('click', '.create', function(){
         var parameters = $("#createForm").serialize();
-        $.post( '/index.php/student_controller/create/', parameters)
-        .success( function(json){
-            var obj = jQuery.parseJSON(json);
-            if(obj.status)
-                $("#container").html(obj.response_view);
+        $.post( '/index.php/student_controller/create/', parameters, function(json){
+            if(json.status) {
+                $("#container").html(json.response_view);
+                $("#add").html('');
+            }
             else 
-                $("#add").html(obj.response_view);
-        }); 
+                $("#add").html(json.response_view);
+        },'json'); 
     });
 });
 
 $(document).ready(function(){
     $("#container").on('click', '.update', function(){     
-        $.get('/index.php/student_controller/update/' + $(this).attr('id'))
-        .success(function(json){
-                var obj = jQuery.parseJSON(json);
-                if(obj.status)
-                    $("#container").html(obj.response_view);
+        $.get('/index.php/student_controller/update/' + $(this).attr('id'), function(json){
+                if(json.status)
+                    $("#container").html(json.response_view);
                 else {
-                    $("#add").html(obj.response_view);
+                    $("#add").html(json.response_view);
                     $("#container #message").remove();
                 }
-            });
+            }, 'json');
     });
     
     $("#add").on('click', '.update', function(){
-        var parameters = $("#updateForm").serialize();
-        $.post('/index.php/student_controller/update/' + $(this).attr('id'), parameters)
-        .success(function(json){
-                var obj = jQuery.parseJSON(json);
-                if(obj.status) {
-                    $("#container").html(obj.response_view);
+        var href = location.href;
+        var parameters = $("#updateForm").serialize() + '&last_segment=' + href.replace(/.*\//, '');
+        $.post('/index.php/student_controller/update/' + $(this).attr('id'), parameters, function(json){
+                if(json.status) {
+                    $("#container").html(json.response_view);
                     $("#add").html('');
                 }
                 else
-                    $("#add").html(obj.response_view);                   
-        });
+                    $("#add").html(json.response_view);                   
+        }, 'json');
     });
 });

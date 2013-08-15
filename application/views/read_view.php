@@ -26,6 +26,7 @@
             }
          ?>
     </table>
+    <?if(isset($uri)) $this->uri->segments[3] = $uri?>
     <?=$this->pagination->create_links();?>
 </div>
 
